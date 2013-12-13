@@ -2,6 +2,8 @@ package Modjam.TeamSmip.ExoCraft;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.MinecraftForge;
+import Modjam.TeamSmip.ExoCraft.Events.ExoCraftEventHandler;
 import Modjam.TeamSmip.ExoCraft.Item.ItemMech;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -26,7 +28,7 @@ public class ExoCraft
     public static Item mechSpawner;
     
 	@EventHandler
-    public void load(FMLPreInitializationEvent event)
+    public void Preload(FMLPreInitializationEvent event)
     {
 		ExoCraftConfig.Load(event);
     }
@@ -36,7 +38,7 @@ public class ExoCraft
     {
 		proxy.load();
 		mechSpawner = new ItemMech(ExoCraftConfig.MechSpanwerID).setCreativeTab(CreativeTabs.tabTransport).setUnlocalizedName("MechSpawner");
-		
+		MinecraftForge.EVENT_BUS.register(new ExoCraftEventHandler());
 		
 		
     }
