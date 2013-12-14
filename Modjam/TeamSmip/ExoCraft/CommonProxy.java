@@ -7,7 +7,7 @@ public class CommonProxy
 {
 	public void load()
 	{
-		EntityRegistry.registerModEntity(EntityMech.class, "BasicMech", EntityRegistry.findGlobalUniqueEntityId(), ExoCraft.instance, 100, 10, true);
+		EntityRegistry.registerModEntity(EntityMech.class, "BasicMech", EntityRegistry.findGlobalUniqueEntityId(), ExoCraft.instance, 100, 1, true);
 		
 	}
 }
