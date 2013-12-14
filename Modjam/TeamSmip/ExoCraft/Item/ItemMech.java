@@ -12,6 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class ItemMech extends Item
@@ -22,6 +23,8 @@ public class ItemMech extends Item
 		super(par1);
 	}
 
+	ResourceLocation chip = new ResourceLocation("Resources/Textures/items/mech.png");
+	
 	public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World,
 			EntityPlayer par3EntityPlayer)
 	{

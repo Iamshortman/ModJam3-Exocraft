@@ -1,12 +1,14 @@
 package Modjam.TeamSmip.ExoCraft.Entity;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class EntityMech extends Entity
+public class EntityMech extends EntityLiving
 {
 
 	public EntityMech(World par1World)
@@ -17,61 +19,83 @@ public class EntityMech extends Entity
 		this.ignoreFrustumCheck = true;
 	}
 
-	
 	@Override
 	public void onUpdate()
 	{
-		
-		
 		super.onUpdate();
 	}
+
 	
-	//TODO Fix this
-    public boolean interact(EntityPlayer par1EntityPlayer)
-    {
-		if(this.riddenByEntity == null)
-		{
-			par1EntityPlayer.mountEntity(this);
-		}
+	
+	@Override
+	public void moveEntityWithHeading(float par1, float par2)
+	{
+        if (this.riddenByEntity != null)
+        {
+            this.prevRotationYaw = this.rotationYaw = this.riddenByEntity.rotationYaw;
+            this.setRotation(this.rotationYaw, this.rotationPitch);
+            this.rotationYawHead = this.renderYawOffset = this.rotationYaw;
+            par1 = ((EntityLivingBase)this.riddenByEntity).moveStrafing * 0.5F;
+            par2 = ((EntityLivingBase)this.riddenByEntity).moveForward;
+        }
 		
-    	return true;
-    }
-	
+		
+		super.moveEntityWithHeading(par1, par2);
+	}
+
 	@Override
 	public boolean canBeCollidedWith()
 	{
 		return true;
 	}
 
-
 	@Override
 	public boolean canBePushed()
 	{
-		//One does not push a mech
+		// One does not push a mech
 		return false;
 	}
 
-
 	@Override
-	protected void entityInit()
+	protected void doBlockCollisions()
 	{
-		// TODO Auto-generated method stub
-		
+		super.doBlockCollisions();
 	}
 
-
 	@Override
-	protected void readEntityFromNBT(NBTTagCompound nbttagcompound)
+	public void onCollideWithPlayer(EntityPlayer par1EntityPlayer)
 	{
-		// TODO Auto-generated method stub
-		
+		// TODO If moving hurt player
+		super.onCollideWithPlayer(par1EntityPlayer);
 	}
 
+	@Override
+	public boolean interact(EntityPlayer par1EntityPlayer)
+	{
+		if (this.riddenByEntity == null)
+		{
+			par1EntityPlayer.mountEntity(this);
+		}
+
+		return true;
+	}
 
 	@Override
-	protected void writeEntityToNBT(NBTTagCompound nbttagcompound)
+	public void updateRidden()
+	{
+		super.updateRidden();
+	}
+
+	@Override
+	public void updateRiderPosition()
 	{
 		// TODO Auto-generated method stub
-		
-	} 
+		super.updateRiderPosition();
+	}
+
+	@Override
+	public boolean shouldDismountInWater(Entity rider)
+	{
+		return false;
+	}
 }
