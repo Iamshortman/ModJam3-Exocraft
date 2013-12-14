@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.AnimalChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -11,6 +12,9 @@ import net.minecraft.world.World;
 public class EntityMech extends EntityLiving
 {
 
+	public AnimalChest mechChest;
+	private String inventoryTitle;
+	
 	public EntityMech(World par1World)
 	{
 		super(par1World);
@@ -37,6 +41,8 @@ public class EntityMech extends EntityLiving
             this.rotationYawHead = this.renderYawOffset = this.rotationYaw;
             par1 = ((EntityLivingBase)this.riddenByEntity).moveStrafing * 0.5F;
             par2 = ((EntityLivingBase)this.riddenByEntity).moveForward;
+            
+            
         }
 		
 		
@@ -98,4 +104,19 @@ public class EntityMech extends EntityLiving
 	{
 		return false;
 	}
+
+	public void func_110133_a(String par1Str)
+    {
+      //  this.field_94051_e = true;
+        this.inventoryTitle = par1Str;
+    }
+	
+	 public void openGUI(EntityPlayer par1EntityPlayer)
+	    {
+	        if (!this.worldObj.isRemote && (this.riddenByEntity == null || this.riddenByEntity == par1EntityPlayer))
+	        {
+	            this.mechChest.func_110133_a(this.getEntityName());
+	          //  par1EntityPlayer.displayMechGUI(this, this.mechChest);
+	        }
+	    }
 }

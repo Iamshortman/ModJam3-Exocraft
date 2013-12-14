@@ -12,10 +12,11 @@ import net.minecraft.util.ResourceLocation;
 
 public class RenderMech extends Render
 {
-
-	ResourceLocation body = new ResourceLocation("Resources/Textures/Mechs/Mach1/MechBody.png");
-	ResourceLocation leg = new ResourceLocation("Resources/Textures/Mechs/Mach1/MechLeg.png");
-	ResourceLocation arm = new ResourceLocation("Resources/Textures/Mechs/Mach1/MechArm.png");
+	String path = "Resources/Textures/Mechs/";
+	
+	ResourceLocation body = new ResourceLocation(path + "Mach1/MechBody.png");
+	ResourceLocation leg = new ResourceLocation(path + "Mach1/MechLeg.png");
+	ResourceLocation arm = new ResourceLocation(path + "Mach1/MechArm.png");
 	
 	@Override
 	public void doRender(Entity entity, double x, double y, double z, float f, float f1)
