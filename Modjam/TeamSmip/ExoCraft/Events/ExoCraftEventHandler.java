@@ -1,10 +1,13 @@
 package Modjam.TeamSmip.ExoCraft.Events;
 
+import Modjam.TeamSmip.ExoCraft.Entity.EntityMech;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.client.event.*;
 
 public class ExoCraftEventHandler
 {
@@ -18,5 +21,4 @@ public class ExoCraftEventHandler
 		System.out.println("Cabbge!!!!!!!!!!!!!!!1");
 		event.drops.add(item);
 	}
-
 }
