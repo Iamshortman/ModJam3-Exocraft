@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
 public class RenderMech extends Render
@@ -27,6 +28,21 @@ public class RenderMech extends Render
 		
 		ResourceLocation textures[] = mech.getTexture();
 		
+		
+        float f7 = mech.prevLimbSwingAmount + (mech.limbSwingAmount - mech.prevLimbSwingAmount) * f1;
+        float f8 = mech.limbSwing - mech.limbSwingAmount * (1.0F - f1);
+        
+        if (f7 > 1.0F)
+        {
+            f7 = 1.0F;
+        }
+		
+        float rightLegSwing = (MathHelper.cos(f7 * 0.6662F) * f8);
+        float rightArmSwing = MathHelper.cos(f7 * 0.6662F + (float)Math.PI) * 2.0F * f8 * 0.5F;
+		
+        float leftLegSwing =  MathHelper.cos(f7 * 0.6662F + (float)Math.PI) * 1.4F * f8;
+        float legtArmSwing =  MathHelper.cos(f7 * 0.6662F) * 2.0F * f8 * 0.5F;
+        
 		GL11.glPushMatrix();
 		
         GL11.glTranslatef((float)x, (float)y - 0.5F, (float)z);

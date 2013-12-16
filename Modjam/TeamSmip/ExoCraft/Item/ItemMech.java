@@ -23,8 +23,6 @@ public class ItemMech extends Item
 		super(par1);
 	}
 
-	ResourceLocation chip = new ResourceLocation("Resources/Textures/items/mech.png");
-	
 	public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World,
 			EntityPlayer par3EntityPlayer)
 	{

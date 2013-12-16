@@ -20,8 +20,6 @@ import Modjam.TeamSmip.ExoCraft.Entity.EntityMech;
 public class ItemChip extends Item
 
 {
-	String chip = "Resources/Textures/items/";
-
 	public ItemChip(int par1)
 	{
 		super(par1);
@@ -43,7 +41,6 @@ public class ItemChip extends Item
              for (int i = 0; i < Chips.ChipNames.length; i++)
              {
                      String str = Chips.ChipNames[i].toLowerCase() + "chip";
-                     str = chip + str;
                      icons[i] = par1IconRegister.registerIcon(str);
              }
      }

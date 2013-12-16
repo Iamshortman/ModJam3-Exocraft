@@ -2,14 +2,19 @@ package Modjam.TeamSmip.ExoCraft.Entity;
 
 import Modjam.TeamSmip.ExoCraft.Chips;
 import Modjam.TeamSmip.ExoCraft.ExoCraft;
+import Modjam.TeamSmip.ExoCraft.Item.ItemChip;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityFallingSand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.AnimalChest;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -18,7 +23,7 @@ public class EntityMech extends EntityLivingBase
 {
 
 	public AnimalChest mechChest;
-	
+
 	public EntityMech(World par1World)
 	{
 		super(par1World);
@@ -30,10 +35,26 @@ public class EntityMech extends EntityLivingBase
 	}
 
 	@Override
+	protected void entityInit()
+	{
+		super.entityInit();
+		this.dataWatcher.addObject(14, Integer.valueOf(-1));
+	}
+
+	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
 		this.rotationPitch = 0;
+
+		if (!this.worldObj.isRemote)
+		{
+			if (this.mechChest.getStackInSlot(0) == null)
+			{
+				this.dataWatcher.updateObject(14, Integer.valueOf(-1));
+			}
+		}
+
 	}
 
 	@Override
@@ -48,7 +69,6 @@ public class EntityMech extends EntityLivingBase
 			par2 = ((EntityLivingBase) this.riddenByEntity).moveForward;
 
 		}
-
 		super.moveEntityWithHeading(par1, par2);
 	}
 
@@ -85,8 +105,8 @@ public class EntityMech extends EntityLivingBase
 		{
 			if (par1EntityPlayer.isSneaking())
 			{
-				par1EntityPlayer.openGui(ExoCraft.instance, 0, worldObj, this.entityId,
-				0, 0);
+				par1EntityPlayer.openGui(ExoCraft.instance, 0, worldObj,
+						this.entityId, 0, 0);
 				return true;
 			}
 
@@ -99,29 +119,98 @@ public class EntityMech extends EntityLivingBase
 	public ResourceLocation[] getTexture()
 	{
 		ItemStack item = this.mechChest.getStackInSlot(0);
-		
+
 		String file = "Mach1";
-		
-		if(item != null)
+
+		if (item != null)
 		{
 			int meta = item.getItemDamage();
-			if(meta < Chips.ChipNames.length && meta >= 0)
+			if (meta < Chips.ChipNames.length && meta >= 0)
 			{
 				file = Chips.ChipNames[meta];
 			}
 		}
-
-		ResourceLocation Texture[] = 
+		else if (this.dataWatcher.getWatchableObjectInt(14) != -1)
 		{
-		new ResourceLocation ("Resources/Textures/Mechs/" + file + "/MechBody.png"),	
-		new ResourceLocation ("Resources/Textures/Mechs/" + file + "/MechLeg.png"),	
-		new ResourceLocation ("Resources/Textures/Mechs/" + file + "/MechArm.png")
-		};
-		
+			file = Chips.ChipNames[this.dataWatcher.getWatchableObjectInt(14)];
+		}
+
+		ResourceLocation Texture[] =
+		{
+				new ResourceLocation("textures/Mechs/" + file
+						+ "/MechBody.png"),
+				new ResourceLocation("textures/Mechs/" + file
+						+ "/MechLeg.png"),
+				new ResourceLocation("textures/Mechs/" + file
+						+ "/MechArm.png") };
+
 		return Texture;
 	}
-	
-	
+
+	@Override
+	public void writeEntityToNBT(NBTTagCompound par1nbtTagCompound)
+	{
+		super.writeEntityToNBT(par1nbtTagCompound);
+		if (this.mechChest.getStackInSlot(0) != null)
+		{
+			par1nbtTagCompound.setTag(
+					"ChipItem",
+					this.mechChest.getStackInSlot(0).writeToNBT(
+							new NBTTagCompound("ChipItem")));
+		}
+	}
+
+	@Override
+	public void readEntityFromNBT(NBTTagCompound par1nbtTagCompound)
+	{
+		super.readEntityFromNBT(par1nbtTagCompound);
+		if (par1nbtTagCompound.hasKey("ChipItem"))
+		{
+			ItemStack itemstack = ItemStack
+					.loadItemStackFromNBT(par1nbtTagCompound
+							.getCompoundTag("ChipItem"));
+
+			if (itemstack != null && itemstack.getItem() instanceof ItemChip)
+			{
+				this.mechChest.setInventorySlotContents(0, itemstack);
+				if (!this.worldObj.isRemote)
+				{
+					this.dataWatcher
+							.updateObject(14, itemstack.getItemDamage());
+				}
+			}
+		}
+	}
+
+	@Override
+	public boolean hitByEntity(Entity par1Entity)
+	{
+		if (riddenByEntity != null
+				&& par1Entity.entityId == riddenByEntity.entityId)
+		{
+			ShootSand((EntityPlayer) riddenByEntity);
+			return true;
+		}
+
+		return super.hitByEntity(par1Entity);
+	}
+
+	private void ShootSand(EntityPlayer player)
+	{
+		if(player.inventory.hasItem(Block.sand.blockID))
+		{
+			player.inventory.consumeInventoryItem(Block.sand.blockID);
+			EntityFallingSand sand = new EntityFallingSand(worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, Block.sand.blockID);
+			
+	        sand.motionX = (double)(-MathHelper.sin(player.rotationYaw / 180.0F * (float)Math.PI) * MathHelper.cos(player.rotationPitch / 180.0F * (float)Math.PI));
+	        sand.motionZ = (double)(MathHelper.cos(player.rotationYaw / 180.0F * (float)Math.PI) * MathHelper.cos(player.rotationPitch / 180.0F * (float)Math.PI));
+	        sand.motionY = (double)(-MathHelper.sin(player.rotationPitch / 180.0F * (float)Math.PI));
+			
+	        this.worldObj.spawnEntityInWorld(sand);
+		}
+		
+	}
+
 	@Override
 	public void updateRidden()
 	{
@@ -169,33 +258,6 @@ public class EntityMech extends EntityLivingBase
 	public ItemStack[] getLastActiveItems()
 	{
 		return new ItemStack[0];
-	}
-
-	public boolean isImmuneToDamage(DamageSource src)
-	{
-		Entity srcEnt = src.getEntity();
-		if (srcEnt != null)
-		{
-			// ignore own damage
-			if (srcEnt == this)
-			{
-				return true;
-			}
-
-			// ignore damage from rider
-			if (srcEnt == riddenByEntity)
-			{
-				return true;
-			}
-		}
-
-		// ignore suffocation damage
-		if (src.damageType.equals("inWall"))
-		{
-			return true;
-		}
-
-		return false;
 	}
 
 	@Override

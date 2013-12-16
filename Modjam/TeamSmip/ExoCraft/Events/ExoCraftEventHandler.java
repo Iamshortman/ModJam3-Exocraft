@@ -18,7 +18,5 @@ public class ExoCraftEventHandler
 		EntityItem item = new EntityItem(event.entity.worldObj,
 				event.entity.posX, event.entity.posY, event.entity.posZ,
 				new ItemStack(Item.diamond, 1));
-		System.out.println("Cabbge!!!!!!!!!!!!!!!1");
-		event.drops.add(item);
 	}
 }

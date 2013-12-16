@@ -44,7 +44,7 @@ public class ExoCraft
     public void load(FMLInitializationEvent event)
     {
 		proxy.load();
-		mechSpawner = new ItemMech(ExoCraftConfig.MechSpanwerID).setCreativeTab(CreativeTabs.tabTransport).setUnlocalizedName("MechSpawner");
+		mechSpawner = new ItemMech(ExoCraftConfig.MechSpanwerID).setCreativeTab(CreativeTabs.tabTransport).setUnlocalizedName("mech").setTextureName("mech");
 		chip = new ItemChip(ExoCraftConfig.ChipID).setCreativeTab(CreativeTabs.tabTransport).setUnlocalizedName("Chip");
 		MinecraftForge.EVENT_BUS.register(new ExoCraftEventHandler());
 		
